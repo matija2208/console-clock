@@ -25,8 +25,8 @@ int get_time(int& days, int& month, int& year, int& hours, int& minutes, int& se
 		days -= n_of_days_in_a_year;
 		year++;
 	}
-	int n_of_days_in_a_month[] = { 0,31,28,31,30,31,30,31,31,30,31,30,31 };
-	month = 1;
+	int n_of_days_in_a_month[] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
+	month = 0;
 	int temporary;
 	while (days >= ((n_of_days_in_a_year == 366 && month == 1) ? temporary = 29, 29 : temporary = n_of_days_in_a_month[month], temporary))
 	{
@@ -81,7 +81,7 @@ void draw_line(char canvas[39][79], int n, int m, int x, int y, char brush)
 	float yi;
 	float xi;
 	int steps;
-	int dx = 2*x - X;
+	int dx = 2 * x - X;
 	int dy = y - Y;
 
 	canvas[toInt(Y)][toInt(X)] = brush;
@@ -102,9 +102,23 @@ void draw_line(char canvas[39][79], int n, int m, int x, int y, char brush)
 	}
 }
 
+void put_date(char clock[39][79], int day, int month, int year)
+{
+	char months[12][4] = { "jan","feb","mar","apr","may","jun","jul","avg","sep","oct","nov","dec" };
+
+	char date[15];
+
+	sprintf_s(date, "%0d. %s, %d.", day, months[month], year);
+
+	for (int i = 0; i < 14; i++)
+	{
+		clock[9][i + 32] = date[i];
+	}
+}
+
 int main()
 {
-	int year,month,day,hours,minutes,seconds;
+	int year, month, day, hours, minutes, seconds;
 	char clock[39][79] =
 	{
 		"                              ##################                              ",
@@ -141,7 +155,7 @@ int main()
 		"        ##                                                          ##        ",
 		"          ##                                                      ##          ",
 		"            ##                                                  ##            ",
-		"              ##   VII                                  V    ##              ",
+		"              ##   VII                                   V    ##              ",
 		"                ####                                      ####                ",
 		"                    ####                              ####                    ",
 		"                        ######        VI        ######                        ",
@@ -149,16 +163,17 @@ int main()
 	};
 
 	int x[3], y[3];
-	
+
 	int tHours;
 	std::cout << "Enter your timezone : UTC";
 	std::cin >> tHours;
-	
-	begin:
+
+begin:
 	if (!get_time(day, month, year, hours, minutes, seconds, tHours))
 	{
 		//system("cls");
 		std::cout << "\033[0;0H";
+		put_date(clock, day, month, year);
 		get_point_for_seconds(seconds, x[0], y[0]);
 		draw_line(clock, 39, 78, x[0], y[0], '*');
 		get_point_for_minutes(minutes, x[1], y[1]);
@@ -180,7 +195,7 @@ int main()
 		draw_line(clock, 39, 78, x[1], y[1], ' ');
 		draw_line(clock, 39, 78, x[2], y[2], ' ');
 	}
-	
+
 	goto begin;
 
 	return 0;
